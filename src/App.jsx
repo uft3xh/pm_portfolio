@@ -260,11 +260,7 @@ function HomeScreen({ data, editMode, save }) {
             {data.location} · <CountingCoord key={latNum} target={latNum} suffix={latSuf} />, <CountingCoord key={lngNum} target={lngNum} suffix={lngSuf} />
           </div>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            {data.email && <div style={{ position:"relative", display:"inline-flex" }} className="mail-wrap">
-  <a href={`mailto:${data.email}`} style={{ fontSize:44, textDecoration:"none", color:PURPLE, lineHeight:1, display:"inline-flex", alignItems:"center" }}>✉</a>
-  <div style={{ position:"absolute", bottom:"calc(100% + 8px)", left:"50%", transform:"translateX(-50%)", background:"#111", color:"#fff", fontSize:11, fontWeight:600, letterSpacing:"0.08em", textTransform:"uppercase", padding:"5px 12px", borderRadius:6, whiteSpace:"nowrap", pointerEvents:"none", opacity:0, transition:"opacity 0.15s ease" }} className="mail-tooltip">Send me an email</div>
-  <style>{`.mail-wrap:hover .mail-tooltip { opacity: 1 !important; }`}</style>
-</div>}
+            {data.email && <Pill href={`mailto:${data.email}`}>✉ Email</Pill>}
             {data.linkedin && <Pill href={data.linkedin}>LinkedIn</Pill>}
             {data.resumeUrl && <Pill href={data.resumeUrl}>Resume</Pill>}
             {!data.email && !data.linkedin && !data.resumeUrl && !editMode && <span style={{ fontSize: 14, color: "#bbb", fontStyle: "italic", fontFamily: F_SANS }}>Add contact links in edit mode</span>}
@@ -739,11 +735,7 @@ function ProfileScreen({ data, editMode, save }) {
           <h1 style={{ fontFamily: F_SERIF, fontSize: "clamp(40px,5vw,64px)", fontWeight: 700, color: "#111", lineHeight: 1.1, letterSpacing: "-0.02em", marginBottom: 10 }}>{data.name}</h1>
           <div style={{ fontFamily: F_SERIF, fontSize: 22, fontStyle: "italic", color: PURPLE_MID, marginBottom: 20 }}>{(data.titles||[])[0] || "Product Manager"}</div>
           <div style={{ display:"flex", gap:10, flexWrap:"wrap", alignItems:"center" }}>
-            {data.email && <div style={{ position:"relative", display:"inline-flex" }} className="mail-wrap">
-  <a href={`mailto:${data.email}`} style={{ fontSize:44, textDecoration:"none", color:PURPLE, lineHeight:1, display:"inline-flex", alignItems:"center" }}>✉</a>
-  <div style={{ position:"absolute", bottom:"calc(100% + 8px)", left:"50%", transform:"translateX(-50%)", background:"#111", color:"#fff", fontSize:11, fontWeight:600, letterSpacing:"0.08em", textTransform:"uppercase", padding:"5px 12px", borderRadius:6, whiteSpace:"nowrap", pointerEvents:"none", opacity:0, transition:"opacity 0.15s ease" }} className="mail-tooltip">Send me an email</div>
-  <style>{`.mail-wrap:hover .mail-tooltip { opacity: 1 !important; }`}</style>
-</div>}
+            {data.email && <Pill href={`mailto:${data.email}`}>✉ Email</Pill>}
             {data.linkedin && <Pill href={data.linkedin}>LinkedIn</Pill>}
             {data.resumeUrl && <Pill href={data.resumeUrl}>Resume</Pill>}
             <span style={{ fontSize:11, fontWeight:500, letterSpacing:"0.14em", textTransform:"uppercase", color:"#bbb", fontFamily:F_SANS, marginLeft:8 }}>{data.location}</span>
