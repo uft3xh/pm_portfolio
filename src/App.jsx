@@ -750,7 +750,7 @@ function ProfileScreen({ data, editMode, save }) {
           </div>
         </div>
         {(data.aboutPhotoUrl || data.photoUrl) && (
-          <div style={{ width:340, height:340, borderRadius:16, overflow:"hidden", flexShrink:0, background:"#f0ede8", marginLeft:40 }}>
+          <div style={{ width:340, height:340, borderRadius:16, overflow:"hidden", flexShrink:0, background:"#f0ede8", marginLeft:120 }}>
             <img src={data.aboutPhotoUrl || data.photoUrl} alt={data.name} style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }} />
           </div>
         )}
