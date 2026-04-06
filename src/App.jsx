@@ -39,7 +39,9 @@ const DEFAULT_DATA = {
   collagePhotos: [],
   heroPhotos: [],
   aboutPhotoUrl: "",
+  aboutPhotoCaption: "",
   workPhotoUrl: "",
+  workPhotoCaption: "",
   contentTitle: "Reads & Listens",
   content: [],
 };
@@ -437,9 +439,21 @@ function WorkScreen({ data, editMode, save }) {
           <p style={{ fontSize: 16, color: "#888", fontFamily: F_SANS, fontWeight: 300, fontStyle: "italic" }}>an overview of my career</p>
         </div>
         {(data.workPhotoUrl || editMode) && (
-          <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", width:"100%", marginLeft:-60 }}>
+          <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", width:"100%", marginLeft:86 }}>
             {data.workPhotoUrl && (
-              <img src={data.workPhotoUrl} alt="" style={{ width:420, height:260, borderRadius:16, objectFit:"cover", display:"block" }} />
+              <div style={{ width:"100%" }}>
+                <div style={{ width:"100%", borderRadius:20, overflow:"hidden" }}>
+                  <img src={data.workPhotoUrl} alt="" style={{ width:"100%", height:"auto", display:"block" }} />
+                </div>
+                {(data.workPhotoCaption || editMode) && (
+                  <div style={{ marginTop:10, textAlign:"center" }}>
+                    {editMode
+                      ? <input value={data.workPhotoCaption||""} onChange={e=>save({...data,workPhotoCaption:e.target.value})} placeholder="Add a caption…" style={{ ...iSt, fontSize:12, textAlign:"center" }} />
+                      : <span style={{ fontSize:12, color:"#555", fontFamily:F_SANS, fontStyle:"italic" }}>{data.workPhotoCaption}</span>
+                    }
+                  </div>
+                )}
+              </div>
             )}
             {editMode && <div style={{ marginTop:8, width:"100%" }}><EF label="Work page photo URL" value={data.workPhotoUrl||""} onChange={v=>save({...data,workPhotoUrl:v})} ph="/photo.jpg or https://..." /></div>}
           </div>
@@ -741,30 +755,30 @@ function ProfileScreen({ data, editMode, save }) {
     <div style={{ maxWidth: 980, margin: "0 auto", padding: "80px 56px 140px" }}>
 
       {/* NAME + TITLE */}
-      <div style={{ display:"flex", gap:56, alignItems:"center", marginBottom: 40 }}>
-        <div>
+      <div style={{ display:"flex", gap:56, alignItems:"center", marginBottom: 40, justifyContent:"center" }}>
+        <div style={{ textAlign:"center" }}>
           <h1 style={{ fontFamily: F_SERIF, fontSize: "clamp(40px,5vw,64px)", fontWeight: 700, color: "#111", lineHeight: 1.1, letterSpacing: "-0.02em", marginBottom: 10 }}>{data.name}</h1>
-          <div style={{ fontFamily: F_SERIF, fontSize: 22, fontStyle: "italic", color: PURPLE_MID, marginBottom: 20 }}>{(data.titles||[])[0] || "Product Manager"}</div>
           <div>
             <span style={{ fontSize:11, fontWeight:500, letterSpacing:"0.14em", textTransform:"uppercase", color:"#bbb", fontFamily:F_SANS }}>{data.location}</span>
           </div>
         </div>
         {(data.aboutPhotoUrl || data.photoUrl) && (
-          <div style={{ width:340, height:340, borderRadius:16, overflow:"hidden", flexShrink:0, background:"#f0ede8", marginLeft:120 }}>
-            <img src={data.aboutPhotoUrl || data.photoUrl} alt={data.name} style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }} />
+          <div style={{ flexShrink:0 }}>
+            <div style={{ width:540, height:560, borderRadius:20, overflow:"hidden" }}>
+              <img src={data.aboutPhotoUrl || data.photoUrl} alt={data.name} style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center 60%", display:"block" }} />
+            </div>
+            {(data.aboutPhotoCaption || editMode) && (
+              <div style={{ marginTop:10, textAlign:"center" }}>
+                {editMode
+                  ? <input value={data.aboutPhotoCaption||""} onChange={e=>save({...data,aboutPhotoCaption:e.target.value})} placeholder="Add a caption…" style={{ ...iSt, fontSize:12, textAlign:"center" }} />
+                  : <span style={{ fontSize:12, color:"#555", fontFamily:F_SANS, fontStyle:"italic" }}>{data.aboutPhotoCaption}</span>
+                }
+              </div>
+            )}
           </div>
         )}
       </div>
 
-      {/* STATS STRIP */}
-      <div style={{ display:"flex", gap:0, marginBottom:64, paddingBottom:48, borderBottom:`2px solid ${PURPLE_LIGHT}` }}>
-        {data.stats.map((s,i) => (
-          <div key={i} style={{ flex:1, paddingRight:32, borderRight: i < data.stats.length-1 ? `1px solid #f0f0ee` : "none", marginRight: i < data.stats.length-1 ? 32 : 0 }}>
-            <div style={{ fontFamily:F_SERIF, fontSize:42, fontWeight:700, color:PURPLE, lineHeight:1, marginBottom:4 }}>{s.num}</div>
-            <div style={{ fontSize:11, fontWeight:600, letterSpacing:"0.12em", textTransform:"uppercase", color:"#bbb", fontFamily:F_SANS }}>{s.label}</div>
-          </div>
-        ))}
-      </div>
 
       {/* ABOUT ME */}
       <div style={{ marginBottom:64, textAlign:"center" }}>
