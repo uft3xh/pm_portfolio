@@ -738,7 +738,11 @@ function ProfileScreen({ data, editMode, save }) {
   const ri=(i)=>save({...data,interests:data.interests.filter((_,x)=>x!==i)});
   const content = data.content || [];
   const uc=(i,f,v)=>{const n=[...content];n[i]={...n[i],[f]:v};save({...data,content:n});};
-  const ac=()=>save({...data,content:[...content,{type:"Podcast",showName:"",episodeName:"",author:"",link:"",cover:"",takeaways:""}]});
+  const [activeFilter, setActiveFilter] = useState(null);
+  const [showAll, setShowAll] = useState(false);
+  const FILTERS = ["PM & Strategy", "Fiction"];
+  const COLLAPSED_COUNT = 3;
+  const ac=()=>save({...data,content:[...content,{type:"Podcast",showName:"",episodeName:"",author:"",link:"",cover:"",takeaways:"",category:""}]});
   const rc=(i)=>save({...data,content:content.filter((_,x)=>x!==i)});
   const TYPE_COLORS = { Podcast:{ bg:"#ede9fe", color: PURPLE }, Book:{ bg:"#fef3c7", color:"#92400e" }, Video:{ bg:"#dcfce7", color:"#166534" } };
 
@@ -805,38 +809,71 @@ function ProfileScreen({ data, editMode, save }) {
               <EF label="Section title" value={data.contentTitle || "Currently"} onChange={v=>save({...data,contentTitle:v})} />
             </div>
           ) : (
-            <div style={{ marginBottom:32 }}>
+            <div style={{ marginBottom:24 }}>
               <h2 style={{ fontFamily:F_SERIF, fontSize:24, fontWeight:700, color:"#111", marginBottom:6 }}>{data.contentTitle || "Reads & Listens"}</h2>
-              <div style={{ width:32, height:3, background:PURPLE, borderRadius:100 }} />
+              <div style={{ width:32, height:3, background:PURPLE, borderRadius:100, marginBottom:20 }} />
+              {/* Filter tags */}
+              <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
+                {FILTERS.map(f => {
+                  const active = activeFilter === f;
+                  return (
+                    <button key={f} onClick={() => { setActiveFilter(active ? null : f); setShowAll(false); }}
+                      style={{ fontSize:12, fontWeight:active?700:500, fontFamily:F_SANS, padding:"6px 16px", borderRadius:100, border:`1.5px solid ${active ? PURPLE : "#e0e0e0"}`, background: active ? PURPLE_LIGHT : "#fff", color: active ? PURPLE : "#888", cursor:"pointer", transition:"all 0.15s ease" }}>
+                      {f}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           )}
 
-          <div style={{ display:"flex", flexDirection:"column", gap:0 }}>
-            {content.map((item, i) => {
-              const tc = TYPE_COLORS[item.type] || TYPE_COLORS.Podcast;
-              return editMode ? (
-                <div key={i} style={{ background:"#fafafa", border:"1px solid #eee", borderRadius:16, padding:20, marginBottom:16 }}>
-                  <div style={{ display:"grid", gridTemplateColumns:"100px 1fr", gap:8, marginBottom:8 }}>
-                    <select value={item.type} onChange={e=>uc(i,"type",e.target.value)} style={{ ...iSt, padding:"9px 10px" }}>
-                      <option>Podcast</option><option>Book</option><option>Video</option>
-                    </select>
-                    <EF label="Host / Author" value={item.author} onChange={v=>uc(i,"author",v)} />
-                  </div>
-                  <EF label="Show / Book name" value={item.showName||""} onChange={v=>uc(i,"showName",v)} />
-                  <EF label="Episode name (if podcast)" value={item.episodeName||""} onChange={v=>uc(i,"episodeName",v)} />
-                  <EF label="Link" value={item.link} onChange={v=>uc(i,"link",v)} ph="https://open.spotify.com/..." />
-                  <EF label="Cover image URL" value={item.cover} onChange={v=>uc(i,"cover",v)} ph="/cover.jpg or https://..." />
-                  <div style={{ marginBottom: 12 }}>
-                    <div style={{ fontSize: 11, color: "#aaa", fontWeight: 600, marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.1em", fontFamily: F_SANS }}>Takeaways / thoughts</div>
-                    <RichTextarea value={item.takeaways} onChange={v=>uc(i,"takeaways",v)} placeholder="Write your thoughts… Tab to indent, Ctrl+B to bold" />
-                  </div>
-                  <RemBtn onClick={()=>rc(i)} />
+          {(() => {
+            const filtered = content.filter(item => !activeFilter || item.category === activeFilter);
+            const visible = showAll ? filtered : filtered.slice(0, COLLAPSED_COUNT);
+            return (
+              <>
+                <div style={{ display:"flex", flexDirection:"column", gap:0 }}>
+                  {(editMode ? content : visible).map((item, i) => {
+                    const tc = TYPE_COLORS[item.type] || TYPE_COLORS.Podcast;
+                    return editMode ? (
+                      <div key={i} style={{ background:"#fafafa", border:"1px solid #eee", borderRadius:16, padding:20, marginBottom:16 }}>
+                        <div style={{ display:"grid", gridTemplateColumns:"100px 1fr 140px", gap:8, marginBottom:8 }}>
+                          <select value={item.type} onChange={e=>uc(i,"type",e.target.value)} style={{ ...iSt, padding:"9px 10px" }}>
+                            <option>Podcast</option><option>Book</option><option>Video</option>
+                          </select>
+                          <EF label="Host / Author" value={item.author} onChange={v=>uc(i,"author",v)} />
+                          <div>
+                            <div style={{ fontSize:10, fontWeight:600, letterSpacing:"0.1em", textTransform:"uppercase", color:"#999", marginBottom:5 }}>Category</div>
+                            <select value={item.category||""} onChange={e=>uc(i,"category",e.target.value)} style={{ ...iSt, padding:"9px 10px" }}>
+                              <option value="">None</option>
+                              {FILTERS.map(f => <option key={f}>{f}</option>)}
+                            </select>
+                          </div>
+                        </div>
+                        <EF label="Show / Book name" value={item.showName||""} onChange={v=>uc(i,"showName",v)} />
+                        <EF label="Episode name (if podcast)" value={item.episodeName||""} onChange={v=>uc(i,"episodeName",v)} />
+                        <EF label="Link" value={item.link} onChange={v=>uc(i,"link",v)} ph="https://open.spotify.com/..." />
+                        <EF label="Cover image URL" value={item.cover} onChange={v=>uc(i,"cover",v)} ph="/cover.jpg or https://..." />
+                        <div style={{ marginBottom: 12 }}>
+                          <div style={{ fontSize: 11, color: "#aaa", fontWeight: 600, marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.1em", fontFamily: F_SANS }}>Takeaways / thoughts</div>
+                          <RichTextarea value={item.takeaways} onChange={v=>uc(i,"takeaways",v)} placeholder="Write your thoughts… Tab to indent, Ctrl+B to bold" />
+                        </div>
+                        <RemBtn onClick={()=>rc(i)} />
+                      </div>
+                    ) : (
+                      <ContentItem key={i} item={item} tc={tc} isLast={i === visible.length - 1} />
+                    );
+                  })}
                 </div>
-              ) : (
-                <ContentItem key={i} item={item} tc={tc} isLast={i === content.length - 1} />
-              );
-            })}
-          </div>
+                {!editMode && filtered.length > COLLAPSED_COUNT && (
+                  <button onClick={() => setShowAll(s => !s)}
+                    style={{ marginTop:16, background:"none", border:`1.5px solid #e0e0e0`, borderRadius:100, color:"#888", fontSize:13, fontWeight:600, padding:"8px 24px", cursor:"pointer", fontFamily:F_SANS, width:"100%", transition:"all 0.15s ease" }}>
+                    {showAll ? "Show less" : `Show ${filtered.length - COLLAPSED_COUNT} more`}
+                  </button>
+                )}
+              </>
+            );
+          })()}
           {editMode && <div style={{ marginTop:16 }}><AddBtn onClick={ac} label="Add content" /></div>}
         </div>
       )}
