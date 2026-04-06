@@ -745,11 +745,8 @@ function ProfileScreen({ data, editMode, save }) {
         <div>
           <h1 style={{ fontFamily: F_SERIF, fontSize: "clamp(40px,5vw,64px)", fontWeight: 700, color: "#111", lineHeight: 1.1, letterSpacing: "-0.02em", marginBottom: 10 }}>{data.name}</h1>
           <div style={{ fontFamily: F_SERIF, fontSize: 22, fontStyle: "italic", color: PURPLE_MID, marginBottom: 20 }}>{(data.titles||[])[0] || "Product Manager"}</div>
-          <div style={{ display:"flex", gap:10, flexWrap:"wrap", alignItems:"center" }}>
-            {data.email && <Pill href={`mailto:${data.email}`}>✉ Email</Pill>}
-            {data.linkedin && <Pill href={data.linkedin}>LinkedIn</Pill>}
-            {data.resumeUrl && <Pill href={data.resumeUrl}>Resume</Pill>}
-            <span style={{ fontSize:11, fontWeight:500, letterSpacing:"0.14em", textTransform:"uppercase", color:"#bbb", fontFamily:F_SANS, marginLeft:8 }}>{data.location}</span>
+          <div>
+            <span style={{ fontSize:11, fontWeight:500, letterSpacing:"0.14em", textTransform:"uppercase", color:"#bbb", fontFamily:F_SANS }}>{data.location}</span>
           </div>
         </div>
         {(data.aboutPhotoUrl || data.photoUrl) && (
