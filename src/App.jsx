@@ -39,6 +39,7 @@ const DEFAULT_DATA = {
   collagePhotos: [],
   heroPhotos: [],
   aboutPhotoUrl: "",
+  workPhotoUrl: "",
   contentTitle: "Reads & Listens",
   content: [],
 };
@@ -430,9 +431,19 @@ function WorkScreen({ data, editMode, save }) {
 
   return (
     <div style={{ maxWidth: 860, margin: "0 auto", padding: "80px 48px 140px" }}>
-      <div style={{ marginBottom: 52 }}>
-        <h2 style={{ fontFamily: F_SERIF, fontSize: 52, fontWeight: 700, color: "#111", marginBottom: 6 }}>Work</h2>
-        <p style={{ fontSize: 16, color: "#888", fontFamily: F_SANS, fontWeight: 300, fontStyle: "italic" }}>an overview of my career</p>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 2fr", alignItems:"start", marginBottom: 52 }}>
+        <div>
+          <h2 style={{ fontFamily: F_SERIF, fontSize: 52, fontWeight: 700, color: "#111", marginBottom: 6 }}>Work</h2>
+          <p style={{ fontSize: 16, color: "#888", fontFamily: F_SANS, fontWeight: 300, fontStyle: "italic" }}>an overview of my career</p>
+        </div>
+        {(data.workPhotoUrl || editMode) && (
+          <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", width:"100%", marginLeft:-60 }}>
+            {data.workPhotoUrl && (
+              <img src={data.workPhotoUrl} alt="" style={{ width:420, height:260, borderRadius:16, objectFit:"cover", display:"block" }} />
+            )}
+            {editMode && <div style={{ marginTop:8, width:"100%" }}><EF label="Work page photo URL" value={data.workPhotoUrl||""} onChange={v=>save({...data,workPhotoUrl:v})} ph="/photo.jpg or https://..." /></div>}
+          </div>
+        )}
       </div>
 
       <SLabel text="Experience" />
