@@ -416,9 +416,9 @@ function WorkScreen({ data, editMode, save }) {
 
       <SLabel text="Experience" />
       {data.experience.map((exp, i) => (
-        <div key={i} style={{ display: "grid", gridTemplateColumns: "170px 1fr", gap: 36, padding: "32px 0", borderBottom: "1px solid #f0f0ee" }}>
+        <div key={i} style={{ marginBottom: 16 }}>
           {editMode ? (
-            <div style={{ gridColumn: "1/-1", background: "#fafafa", borderRadius: 14, padding: 18 }}>
+            <div style={{ background: "#fafafa", borderRadius: 14, padding: 18 }}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 4 }}>
                 <EF label="Title" value={exp.title} onChange={v => ue(i,"title",v)} />
                 <EF label="Company" value={exp.company} onChange={v => ue(i,"company",v)} />
@@ -436,23 +436,26 @@ function WorkScreen({ data, editMode, save }) {
               <div style={{ marginTop:12 }}><RemBtn onClick={()=>re(i)} /></div>
             </div>
           ) : (
-            <>
-              <div>
-                <div style={{ fontSize: 13, color: "#aaa", fontWeight: 500, marginBottom: 5, fontFamily: F_SANS }}>{exp.date}</div>
-                <div style={{ fontSize: 15, fontWeight: 600, color: "#333", fontFamily: F_SANS }}>{exp.company}</div>
-                {exp.dept && <div style={{ fontSize: 13, color: "#bbb", fontFamily: F_SANS, marginTop: 2 }}>{exp.dept}</div>}
+            <div style={{ display: "grid", gridTemplateColumns: "156px 1fr", gap: 32, padding: "26px 28px 26px 0", background: "#fff", borderRadius: 16, border: "1px solid #eeece8", borderLeft: `4px solid ${PURPLE_MID}`, boxShadow: "0 2px 10px rgba(0,0,0,0.04)", overflow: "hidden" }}>
+              <div style={{ paddingLeft: 24 }}>
+                <div style={{ width: 40, height: 40, borderRadius: 10, background: tagC[i % tagC.length].bg, color: tagC[i % tagC.length].color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, fontWeight: 700, fontFamily: F_SANS, marginBottom: 14 }}>
+                  {exp.company.charAt(0)}
+                </div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#222", fontFamily: F_SANS, marginBottom: 3, lineHeight: 1.3 }}>{exp.company}</div>
+                {exp.dept && <div style={{ fontSize: 12, color: "#aaa", fontFamily: F_SANS, marginBottom: 6 }}>{exp.dept}</div>}
+                <div style={{ fontSize: 11, color: "#bbb", fontWeight: 500, fontFamily: F_SANS, letterSpacing: "0.02em" }}>{exp.date}</div>
               </div>
-              <div>
-                <div style={{ fontFamily: F_SERIF, fontSize: 21, fontWeight: 700, color: "#111", marginBottom: 14 }}>{exp.title}</div>
-                <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 9 }}>
+              <div style={{ paddingTop: 2 }}>
+                <div style={{ fontFamily: F_SERIF, fontSize: 20, fontWeight: 700, color: "#111", marginBottom: 16 }}>{exp.title}</div>
+                <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
                   {exp.bullets.map((b, bi) => (
-                    <li key={bi} style={{ fontSize: 15, color: "#555", paddingLeft: 18, position: "relative", lineHeight: 1.68, fontFamily: F_SANS, fontWeight: 300 }}>
-                      <span style={{ position: "absolute", left: 0, color: "#bbb", fontSize: 12, top: 4 }}>→</span>{b}
+                    <li key={bi} style={{ fontSize: 14.5, color: "#555", paddingLeft: 16, position: "relative", lineHeight: 1.7, fontFamily: F_SANS, fontWeight: 300 }}>
+                      <span style={{ position: "absolute", left: 0, top: 8, width: 5, height: 5, borderRadius: "50%", background: PURPLE_MID, display: "block" }}></span>{b}
                     </li>
                   ))}
                 </ul>
               </div>
-            </>
+            </div>
           )}
         </div>
       ))}
