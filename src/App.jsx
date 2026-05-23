@@ -151,7 +151,13 @@ function HomeScreen({ data, editMode, save }) {
   const latSuf = (data.lat || "").includes("S") ? "S" : "N";
   const lngSuf = (data.lng || "").includes("W") ? "W" : "E";
   const [visible, setVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 640);
   useEffect(() => { const t = setTimeout(() => setVisible(true), 60); return () => clearTimeout(t); }, []);
+  useEffect(() => {
+    const h = () => setIsMobile(window.innerWidth < 640);
+    window.addEventListener("resize", h);
+    return () => window.removeEventListener("resize", h);
+  }, []);
 
   const heroPhotos = data.heroPhotos || [];
 
@@ -162,11 +168,7 @@ function HomeScreen({ data, editMode, save }) {
   });
 
   return (
-    <div style={{ maxWidth: 680, margin: "0 auto", padding: "120px 40px 160px", textAlign: "center" }}>
-      <div style={{ ...fadeStyle(0), marginBottom:40, display:"flex", alignItems:"center", justifyContent:"center", gap:8 }}>
-        <span style={{ width:6, height:6, borderRadius:"50%", background:PURPLE_MID, display:"inline-block" }}></span>
-        <span style={{ fontSize:11, fontWeight:600, letterSpacing:"0.16em", textTransform:"uppercase", color:"#aaa", fontFamily:F_SANS }}>Available for Product (PM/APM) roles</span>
-      </div>
+    <div style={{ maxWidth: 680, margin: "0 auto", padding: isMobile ? "60px 20px 100px" : "120px 40px 160px", textAlign: "center" }}>
       {editMode && (
         <EditBox title="Home">
           <EF label="Name" value={data.name} onChange={v => save({ ...data, name: v })} />
@@ -202,9 +204,9 @@ function HomeScreen({ data, editMode, save }) {
       )}
 
       {/* HERO: photo + text side by side, centered */}
-      <div style={{ ...fadeStyle(0), display: "inline-flex", gap: 40, alignItems: "center", textAlign: "left", marginBottom: 64, width: "100%", justifyContent: "center" }}>
+      <div style={{ ...fadeStyle(0), display: "flex", flexDirection: isMobile ? "column" : "row", gap: isMobile ? 24 : 40, alignItems: "center", textAlign: isMobile ? "center" : "left", marginBottom: isMobile ? 48 : 64, width: "100%", justifyContent: "center" }}>
         {data.photoUrl && (
-          <div style={{ width: 220, height: 220, borderRadius: "50%", overflow: "hidden", flexShrink: 0, background: "#f0ede8" }}>
+          <div style={{ width: isMobile ? 140 : 220, height: isMobile ? 140 : 220, borderRadius: "50%", overflow: "hidden", flexShrink: 0, background: "#f0ede8" }}>
             <img src={data.photoUrl} alt={data.name} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
           </div>
         )}
@@ -235,7 +237,7 @@ function HomeScreen({ data, editMode, save }) {
       </div>
 
       {/* STATS */}
-      <div style={{ ...fadeStyle(0.6), display: "flex", justifyContent: "center", gap: 56 }}>
+      <div style={{ ...fadeStyle(0.6), display: "flex", justifyContent: "center", gap: isMobile ? 32 : 56 }}>
         {data.stats.map((s, i) => (
           <div key={i}>
             <div style={{ fontFamily: F_SERIF, fontSize: 40, fontWeight: 700, color: "#111", marginBottom: 4 }}>{s.num}</div>
@@ -259,6 +261,12 @@ const CS_SECTIONS = [
 
 function CaseStudyView({ proj, onBack, editMode, onSave }) {
   const cs = proj.caseStudy || {};
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 640);
+  useEffect(() => {
+    const h = () => setIsMobile(window.innerWidth < 640);
+    window.addEventListener("resize", h);
+    return () => window.removeEventListener("resize", h);
+  }, []);
   const tagC = [
     { bg:"#f0ede8", color:"#5a4020" },
     { bg:"#eaf2ec", color:"#1e5c30" },
@@ -271,7 +279,7 @@ function CaseStudyView({ proj, onBack, editMode, onSave }) {
   };
 
   return (
-    <div style={{ maxWidth: 780, margin: "0 auto", padding: "60px 48px 160px" }}>
+    <div style={{ maxWidth: 780, margin: "0 auto", padding: isMobile ? "40px 20px 100px" : "60px 48px 160px" }}>
       {/* Back */}
       <button onClick={onBack} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", color: PURPLE_MID, fontSize: 14, fontFamily: F_SANS, fontWeight: 600, marginBottom: 48, padding: 0 }}>
         ← Back to Work
@@ -343,6 +351,12 @@ function CaseStudyView({ proj, onBack, editMode, onSave }) {
 // ── WORK ──────────────────────────────────────────────────────────────────────
 function WorkScreen({ data, editMode, save }) {
   const [selectedIdx, setSelectedIdx] = useState(null);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 640);
+  useEffect(() => {
+    const h = () => setIsMobile(window.innerWidth < 640);
+    window.addEventListener("resize", h);
+    return () => window.removeEventListener("resize", h);
+  }, []);
   const ue = (i,f,v) => { const e=[...data.experience];e[i]={...e[i],[f]:v};save({...data,experience:e}); };
   const ub = (i,bi,v) => { const e=[...data.experience];const b=[...e[i].bullets];b[bi]=v;e[i]={...e[i],bullets:b};save({...data,experience:e}); };
   const ab = (i) => { const e=[...data.experience];e[i]={...e[i],bullets:[...e[i].bullets,""]};save({...data,experience:e}); };
@@ -386,7 +400,7 @@ function WorkScreen({ data, editMode, save }) {
   }
 
   return (
-    <div style={{ maxWidth: 860, margin: "0 auto", padding: "80px 48px 140px" }}>
+    <div style={{ maxWidth: 860, margin: "0 auto", padding: isMobile ? "48px 20px 100px" : "80px 48px 140px" }}>
       <div style={{ display:"grid", gridTemplateColumns:"1fr 2fr", alignItems:"start", marginBottom: 52 }}>
         <div>
           <h2 style={{ fontFamily: F_SERIF, fontSize: 52, fontWeight: 700, color: "#111", marginBottom: 6 }}>Work</h2>
@@ -416,7 +430,7 @@ function WorkScreen({ data, editMode, save }) {
 
       <SLabel text="Experience" />
       {data.experience.map((exp, i) => (
-        <div key={i} style={{ marginBottom: 16 }}>
+        <div key={i} style={{ marginBottom: 28, paddingLeft: 20, borderLeft: `3px solid ${PURPLE_LIGHT}` }}>
           {editMode ? (
             <div style={{ background: "#fafafa", borderRadius: 14, padding: 18 }}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 4 }}>
@@ -435,18 +449,38 @@ function WorkScreen({ data, editMode, save }) {
               <AddBtn onClick={()=>ab(i)} label="Add bullet" />
               <div style={{ marginTop:12 }}><RemBtn onClick={()=>re(i)} /></div>
             </div>
+          ) : isMobile ? (
+            <div style={{ paddingTop: 4 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 11, marginBottom: 12 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 9, background: tagC[i % tagC.length].bg, color: tagC[i % tagC.length].color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 700, fontFamily: F_SANS, flexShrink: 0 }}>
+                  {exp.company.charAt(0)}
+                </div>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: "#222", fontFamily: F_SANS, lineHeight: 1.3 }}>{exp.company}</div>
+                  <div style={{ fontSize: 11, color: "#bbb", fontFamily: F_SANS, marginTop: 1 }}>{exp.date}</div>
+                </div>
+              </div>
+              <div style={{ fontFamily: F_SERIF, fontSize: 18, fontWeight: 700, color: "#111", marginBottom: 12 }}>{exp.title}</div>
+              <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 9 }}>
+                {exp.bullets.map((b, bi) => (
+                  <li key={bi} style={{ fontSize: 14, color: "#555", paddingLeft: 14, position: "relative", lineHeight: 1.7, fontFamily: F_SANS, fontWeight: 300 }}>
+                    <span style={{ position: "absolute", left: 0, top: 8, width: 5, height: 5, borderRadius: "50%", background: PURPLE_MID, display: "block" }}></span>{b}
+                  </li>
+                ))}
+              </ul>
+            </div>
           ) : (
-            <div style={{ display: "grid", gridTemplateColumns: "156px 1fr", gap: 32, padding: "26px 28px 26px 0", background: "#fff", borderRadius: 16, border: "1px solid #eeece8", borderLeft: `4px solid ${PURPLE_MID}`, boxShadow: "0 2px 10px rgba(0,0,0,0.04)", overflow: "hidden" }}>
-              <div style={{ paddingLeft: 24 }}>
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: tagC[i % tagC.length].bg, color: tagC[i % tagC.length].color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, fontWeight: 700, fontFamily: F_SANS, marginBottom: 14 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "148px 1fr", gap: 28, paddingTop: 4 }}>
+              <div>
+                <div style={{ width: 40, height: 40, borderRadius: 10, background: tagC[i % tagC.length].bg, color: tagC[i % tagC.length].color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, fontWeight: 700, fontFamily: F_SANS, marginBottom: 12 }}>
                   {exp.company.charAt(0)}
                 </div>
                 <div style={{ fontSize: 14, fontWeight: 600, color: "#222", fontFamily: F_SANS, marginBottom: 3, lineHeight: 1.3 }}>{exp.company}</div>
-                {exp.dept && <div style={{ fontSize: 12, color: "#aaa", fontFamily: F_SANS, marginBottom: 6 }}>{exp.dept}</div>}
-                <div style={{ fontSize: 11, color: "#bbb", fontWeight: 500, fontFamily: F_SANS, letterSpacing: "0.02em" }}>{exp.date}</div>
+                {exp.dept && <div style={{ fontSize: 12, color: "#bbb", fontFamily: F_SANS, marginBottom: 5 }}>{exp.dept}</div>}
+                <div style={{ fontSize: 11, color: "#bbb", fontWeight: 500, fontFamily: F_SANS }}>{exp.date}</div>
               </div>
-              <div style={{ paddingTop: 2 }}>
-                <div style={{ fontFamily: F_SERIF, fontSize: 20, fontWeight: 700, color: "#111", marginBottom: 16 }}>{exp.title}</div>
+              <div>
+                <div style={{ fontFamily: F_SERIF, fontSize: 20, fontWeight: 700, color: "#111", marginBottom: 14 }}>{exp.title}</div>
                 <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
                   {exp.bullets.map((b, bi) => (
                     <li key={bi} style={{ fontSize: 14.5, color: "#555", paddingLeft: 16, position: "relative", lineHeight: 1.7, fontFamily: F_SANS, fontWeight: 300 }}>
@@ -462,7 +496,7 @@ function WorkScreen({ data, editMode, save }) {
       {editMode && <AddBtn onClick={ae} label="Add experience" />}
 
       <SLabel text="Featured Projects" />
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 20 }}>
         {data.projects.map((proj, i) => (
           <div key={i} style={{ background: "#fafaf8", border: "1px solid #efefed", borderRadius: 18, padding: 28, cursor: editMode ? "default" : "pointer", transition: "box-shadow 0.2s ease" }}
             onClick={() => { if (!editMode) setSelectedIdx(i); }}
@@ -697,6 +731,12 @@ function ProfileScreen({ data, editMode, save }) {
   const uc=(i,f,v)=>{const n=[...content];n[i]={...n[i],[f]:v};save({...data,content:n});};
   const [activeFilter, setActiveFilter] = useState(null);
   const [showAll, setShowAll] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 640);
+  useEffect(() => {
+    const h = () => setIsMobile(window.innerWidth < 640);
+    window.addEventListener("resize", h);
+    return () => window.removeEventListener("resize", h);
+  }, []);
   const FILTERS = ["PM & Strategy", "Fiction"];
   const COLLAPSED_COUNT = 3;
   const ac=()=>save({...data,content:[...content,{type:"Podcast",showName:"",episodeName:"",author:"",link:"",cover:"",takeaways:"",category:""}]});
@@ -713,10 +753,10 @@ function ProfileScreen({ data, editMode, save }) {
   ];
 
   return (
-    <div style={{ maxWidth: 980, margin: "0 auto", padding: "80px 56px 140px" }}>
+    <div style={{ maxWidth: 980, margin: "0 auto", padding: isMobile ? "48px 20px 100px" : "80px 56px 140px" }}>
 
       {/* NAME + TITLE */}
-      <div style={{ display:"flex", gap:56, alignItems:"center", marginBottom: 40, justifyContent:"center" }}>
+      <div style={{ display:"flex", flexDirection: isMobile ? "column-reverse" : "row", gap: isMobile ? 24 : 56, alignItems:"center", marginBottom: isMobile ? 32 : 40, justifyContent:"center" }}>
         <div style={{ textAlign:"center" }}>
           <h1 style={{ fontFamily: F_SERIF, fontSize: "clamp(40px,5vw,64px)", fontWeight: 700, color: "#111", lineHeight: 1.1, letterSpacing: "-0.02em", marginBottom: 10 }}>{data.name}</h1>
           <div>
@@ -724,8 +764,8 @@ function ProfileScreen({ data, editMode, save }) {
           </div>
         </div>
         {(data.aboutPhotoUrl || data.photoUrl) && (
-          <div style={{ flexShrink:0 }}>
-            <div style={{ width:540, height:560, borderRadius:20, overflow:"hidden" }}>
+          <div style={{ flexShrink:0, width: isMobile ? "100%" : "auto" }}>
+            <div style={{ width: isMobile ? "100%" : 540, height: isMobile ? 260 : 560, borderRadius:20, overflow:"hidden" }}>
               <img src={data.aboutPhotoUrl || data.photoUrl} alt={data.name} style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center 60%", display:"block" }} />
             </div>
             {(data.aboutPhotoCaption || editMode) && (
@@ -919,7 +959,20 @@ export default function App() {
   return (
     <div style={{ background:"#fff", minHeight:"100vh", color:"#111" }}>
       <link href={FONT_LINK} rel="stylesheet" />
-      <style>{`* { box-sizing: border-box; margin: 0; padding: 0; } body { background: #fff; }`}</style>
+      <style>{`
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #fff; }
+        @media (max-width: 640px) {
+          .pg-home { padding: 64px 20px 100px !important; }
+          .pg-case { padding: 40px 20px 100px !important; }
+          .pg-about { padding: 48px 20px 100px !important; }
+          .work-photo-grid { grid-template-columns: 1fr !important; }
+          .proj-grid { grid-template-columns: 1fr !important; }
+          .skills-grid { grid-template-columns: 1fr !important; }
+          .stats-row { gap: 24px !important; }
+          .case-back { margin-bottom: 28px !important; }
+        }
+      `}</style>
 
       {editMode && (
         <div style={{ position:"fixed", top:0, left:0, right:0, zIndex:200, display:"flex", alignItems:"center", justifyContent:"space-between", padding:"11px 40px", background:"#111", fontFamily:F_SANS }}>
